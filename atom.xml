@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://life-time.me/"/>
-  <updated>2018-09-16T11:38:08.000Z</updated>
+  <updated>2019-01-04T08:30:47.114Z</updated>
   <id>http://life-time.me/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>cobalt-strike-ms17-010-Cortana</title>
+    <link href="http://life-time.me/2019/01/04/cobalt-strike-ms-17-010/"/>
+    <id>http://life-time.me/2019/01/04/cobalt-strike-ms-17-010/</id>
+    <published>2019-01-04T08:16:49.000Z</published>
+    <updated>2019-01-04T08:30:47.114Z</updated>
+    
+    <content type="html"><![CDATA[<p>根据powershell版的eternalblue脚本写了一个cobalt strike插件</p><p>演示图:<br><img src="https://s2.ax1x.com/2019/01/04/FTau0H.gif" alt=""><br>后期加入批量与listeners选择</p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;根据powershell版的eternalblue脚本写了一个cobalt strike插件&lt;/p&gt;
+&lt;p&gt;演示图:&lt;br&gt;&lt;img src=&quot;https://s2.ax1x.com/2019/01/04/FTau0H.gif&quot; alt=&quot;&quot;&gt;&lt;br&gt;后期加入批量与list
+      
+    
+    </summary>
+    
+    
+      <category term="cobalt strike" scheme="http://life-time.me/tags/cobalt-strike/"/>
+    
+  </entry>
   
   <entry>
     <title>wmiexec</title>

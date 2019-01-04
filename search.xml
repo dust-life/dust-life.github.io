@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>cobalt-strike-ms17-010-Cortana</title>
+      <link href="/2019/01/04/cobalt-strike-ms-17-010/"/>
+      <url>/2019/01/04/cobalt-strike-ms-17-010/</url>
+      
+        <content type="html"><![CDATA[<p>根据powershell版的eternalblue脚本写了一个cobalt strike插件</p><p>演示图:<br><img src="https://s2.ax1x.com/2019/01/04/FTau0H.gif" alt=""><br>后期加入批量与listeners选择</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> cobalt strike </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>wmiexec</title>
       <link href="/2018/09/16/wmiexec/"/>
       <url>/2018/09/16/wmiexec/</url>
