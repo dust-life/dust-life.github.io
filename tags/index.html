@@ -8,7 +8,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1.0, user-scalable=no">
   <meta name="theme-color" content="#202020"/>
   <meta http-equiv="x-ua-compatible" content="ie=edge">
-  <script src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" async></script>
   
   
     <meta name="keywords" content="" />
@@ -34,10 +33,43 @@
 <body>
   <div class="nav-container">
     <nav class="home-menu pure-menu pure-menu-horizontal">
-  <a class="pure-menu-heading" href="/">
-    <img class="avatar" src="http://life-time.me/images/logo.jpg">
-    <span class="title">Life&#39;s blog</span>
-  </a>
+<img class="avatar" src="http://life-time.me/images/logo.jpg">
+<span class="title">Life's blog</span>
+<style>
+
+img.avatar{
+
+  width: 40px;
+  height: 40px;
+  background: #efefef;
+  border-radius: 20px;
+  border-style: none;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 10px;
+
+}
+span.title{
+
+  color: #202020;
+  margin-left: 30px;
+  display: inline-block;
+  vertical-align: middle;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 700;
+  font-size: 24px;
+  line-height: 40px;
+  display: -ms-flexbox;
+  display: flex;
+  
+  z-index: 100;
+  -ms-flex-align: center;
+      align-items: center;
+  width: 100%;
+
+}
+
+</style>
 
   <ul class="pure-menu-list clearfix">
       
@@ -68,6 +100,7 @@
   </ul>
    
 </nav>
+
   </div>
 
   <div class="container" id="content-outer">
@@ -89,6 +122,8 @@
   <footer class="footer text-center">
     <div id="bottom-inner">
         <a class="bottom-item" href="http://life-time.me">首页</a> |
+        <a class="bottom-item" href="http://life-time.me" target="_blank">主站</a> |
+        <a class="bottom-item" href="https://github.com/KevinOfNeu" target="_blank">GitHub</a> |
         <a class="bottom-item" href="https://hexo.io" target="_blank">Powered by hexo</a> |
         <a class="bottom-item" href="https://github.com/KevinOfNeu/hexo-theme-xoxo" target="_blank">Theme xoxo</a>
     </div>
@@ -219,29 +254,6 @@
 
   })(window, document);
 </script>
-
-  
-  <script>
-    var _hmt = _hmt || [];
-    (function () {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?FuckUBaidu";
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-  </script>
-
-
-
-  <script>
-      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-                  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-              m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-      })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-      ga('create', 'XXX', 'auto');
-      ga('send', 'pageview');
-  </script>
-
 
 </body>
 </html>
