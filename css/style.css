@@ -1089,6 +1089,9 @@ img {
 .local-search {
   width: 100%;
 }
+.tocbot {
+  display: none;
+}
 @media (min-width: 768px) {
   .jumbotron {
     margin-bottom: 6rem;
@@ -1111,6 +1114,11 @@ img {
   }
   .local-search {
     width: 70rem;
+  }
+}
+@media (min-width: 1200px) {
+  .tocbot {
+    display: block;
   }
 }
 .list-unstyled,
@@ -2154,6 +2162,9 @@ pre .javascript .function {
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
+.vcomments {
+  margin-top: 3rem;
+}
 .macbook {
   position: relative;
 }
@@ -2333,10 +2344,10 @@ pre .javascript .function {
   content: '\f12a';
 }
 .navbar .nav.nav-main .nav-item:nth-child(3) .nav-item-link::before {
-  content: '\f1a9';
+  content: '\f174';
 }
 .navbar .nav.nav-main .nav-item:nth-child(4) .nav-item-link::before {
-  content: '\f174';
+  content: '\f136';
 }
 .navbar-bottom {
   position: absolute;
